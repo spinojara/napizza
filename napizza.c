@@ -7,9 +7,9 @@
 int main(int argc, char **argv) {
 	double flour = 1000.0;
 	double water = 660.0;
-	double yeast = 3.5;
+	double yeast = 0.35;
 	double salt  = 28.0;
-	double margin = 10.0;
+	double margin = 30.0;
 	double extra = 80.0;
 	double weight = 260.0;
 
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
 		return 1;
 
 	double totalweight = flour + water + yeast + salt;
-	double scaledmargin = MIN(4, pizzas) * margin;
+	double scaledmargin = pizzas * margin;
 	double factor = (pizzas * weight + scaledmargin + extra) / totalweight;
 	double realflour = flour * factor;
 	double realwater = water * factor;
