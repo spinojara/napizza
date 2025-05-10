@@ -8,13 +8,15 @@ CWARNINGS  = -Wall -Wextra -Wshadow -pedantic -Wno-unused-result -Wvla
 COPTIMIZE  = -O2
 CFLAGS     = $(CSTANDARD) $(CWARNINGS) $(COPTIMIZE) $(CDEBUG)
 
+LDLIBS     = -lm
+
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
 
 all: napizza
 
 napizza: napizza.c Makefile
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< $(LDLIBS) -o $@
 
 install: all
 	$(MKDIR_P) $(DESTDIR)$(BINDIR)

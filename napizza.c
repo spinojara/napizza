@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <getopt.h>
+#include <math.h>
 #include <sys/param.h>
 
 int main(int argc, char **argv) {
@@ -13,26 +14,29 @@ int main(int argc, char **argv) {
 	double extra = 80.0;
 	double weight = 260.0;
 
+	int whole_grams = 0;
+
 	long pizzas = 6;
 
 	int percentage = 0;
 	int flour_flag = 0;
 
 	static struct option opts[] = {
-		{ "flour",      required_argument, NULL, 'f' },
-		{ "water",      required_argument, NULL, 'w' },
-		{ "yeast",      required_argument, NULL, 'y' },
-		{ "salt",       required_argument, NULL, 's' },
-		{ "pizzas",     required_argument, NULL, 'p' },
-		{ "margin",     required_argument, NULL, 'm' },
-		{ "extra",      required_argument, NULL, 'e' },
-		{ "weight",     required_argument, NULL, 'g' },
+		{ "flour",       required_argument, NULL, 'f' },
+		{ "water",       required_argument, NULL, 'w' },
+		{ "yeast",       required_argument, NULL, 'y' },
+		{ "salt",        required_argument, NULL, 's' },
+		{ "pizzas",      required_argument, NULL, 'p' },
+		{ "margin",      required_argument, NULL, 'm' },
+		{ "extra",       required_argument, NULL, 'e' },
+		{ "weight",      required_argument, NULL, 'g' },
+		{ "whole-grams", no_argument,       NULL, 'o' },
 	};
 
 	char *endptr;
 	int c, option_index = 0;
 	int error = 0;
-	while ((c = getopt_long(argc, argv, "f:w:y:s:p:m:e:g:", opts, &option_index)) != -1) {
+	while ((c = getopt_long(argc, argv, "f:w:y:s:p:m:e:g:n", opts, &option_index)) != -1) {
 		switch (c) {
 		case 'f':
 			flour_flag = 1;
@@ -102,6 +106,9 @@ int main(int argc, char **argv) {
 				fprintf(stderr, "error: --weight %s\n", optarg);
 			}
 			break;
+		case 'o':
+			whole_grams = 1;
+			break;
 		default:
 			error = 1;
 			break;
@@ -118,14 +125,35 @@ int main(int argc, char **argv) {
 	double realyeast = yeast * factor;
 	double realsalt  = salt * factor;
 
-	printf("Number of pizzas: %ld\n", pizzas);
-	printf("Water percentage: %lg%%\n\n", 100.0 * water / flour);
-	printf("Flour  : %lg (g)\n", realflour);
-	printf("Water  : %lg (g)\n", realwater);
-	printf("Yeast  : %lg (g)\n", realyeast);
-	printf("Salt   : %lg (g)\n\n", realsalt);
-	printf("Margin : %lg (g)\n", scaledmargin);
-	printf("Extra  : %lg (g)\n", extra);
+	if (water < 100 && whole_grams) {
+		printf("Not enough water for --whole-grams.\n");
+		exit(1);
+	}
+
+	double yeastwater = 50;
+
+	printf("Pizza\n");
+	printf("=====\n");
+	printf("Flour            : %lg (g)\n", whole_grams ? round(realflour) : realflour);
+	printf("Salt             : %lg (g)\n", whole_grams ? round(realsalt) : realsalt);
+	if (whole_grams) {
+		printf("Water            : %lg (g)\n", round(realwater - yeastwater));
+		printf("Yeast Water      : %lg (g)\n\n", round(yeastwater));
+		printf("Yeast Water\n");
+		printf("===========\n");
+		printf("Yeast            : 10 (g)\n");
+		printf("Water            : %lg (g)\n\n", round(500 / realyeast - 10));
+	}
+	else {
+		printf("Water            : %lg (g)\n", realwater);
+		printf("Yeast            : %lg (g)\n\n", realyeast);
+	}
+	printf("Info\n");
+	printf("====\n");
+	printf("Number of pizzas : %ld\n", pizzas);
+	printf("Water percentage : %lg%%\n", 100.0 * water / flour);
+	printf("Margin           : %lg (g)\n", whole_grams ? round(scaledmargin) : scaledmargin);
+	printf("Extra            : %lg (g)\n", whole_grams ? round(extra) : extra);
 
 	return 0;
 }
