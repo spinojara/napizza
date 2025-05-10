@@ -3,12 +3,17 @@
 #include <errno.h>
 #include <getopt.h>
 #include <math.h>
+#include <time.h>
 #include <sys/param.h>
 
 int main(int argc, char **argv) {
+	time_t t = time(NULL);
+	struct tm *tm = localtime(&t);
+	int phase = tm->tm_yday - 15;
+
 	double flour = 1000.0;
 	double water = 660.0;
-	double yeast = 0.35;
+	double yeast = 0.275 + 0.075 * cos(2 * M_PI * phase / 365);
 	double salt  = 28.0;
 	double margin = 30.0;
 	double extra = 80.0;
