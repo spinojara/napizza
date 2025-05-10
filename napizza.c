@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 	int phase = tm->tm_yday - 15;
 
 	double flour = 1000.0;
-	double water = 660.0;
+	double water = 720.0;
 	double yeast = 0.275 + 0.075 * cos(2 * M_PI * phase / 365);
 	double salt  = 28.0;
 	double margin = 30.0;
