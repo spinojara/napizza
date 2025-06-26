@@ -130,12 +130,12 @@ int main(int argc, char **argv) {
 	double realyeast = yeast * factor;
 	double realsalt  = salt * factor;
 
-	if (water < 100 && whole_grams) {
-		printf("Not enough water for --whole-grams.\n");
+	if (realwater < 100 && whole_grams) {
+		printf("The batch is too small for --whole-grams.\n");
 		exit(1);
 	}
 
-	double yeastwater = 50;
+	double yeastwater = 20;
 
 	printf("Pizza\n");
 	printf("=====\n");
@@ -146,8 +146,8 @@ int main(int argc, char **argv) {
 		printf("Yeast Water      : %lg (g)\n\n", round(yeastwater));
 		printf("Yeast Water\n");
 		printf("===========\n");
-		printf("Yeast            : 10 (g)\n");
-		printf("Water            : %lg (g)\n\n", round(500 / realyeast - 10));
+		printf("Yeast            : 20 (g)\n");
+		printf("Water            : %lg (g)\n\n", round(20.0 * 20.0 / realyeast - 20.0));
 	}
 	else {
 		printf("Water            : %lg (g)\n", realwater);
